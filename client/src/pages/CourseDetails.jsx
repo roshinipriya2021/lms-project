@@ -59,14 +59,9 @@ function CourseDetails() {
     }
   };
 
-  import { useNavigate } from "react-router-dom";
-
-const navigate = useNavigate();
-
-const handleEdit = () => {
+  const handleEdit = () => {
   navigate(`/edit-course/${course._id}`);
 };
-
   const handleAddLesson = () => {
     navigate("/add-lesson");
   };
