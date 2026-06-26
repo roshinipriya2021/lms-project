@@ -37,7 +37,23 @@ const getLessons = async (req, res) => {
     });
   }
 };
+console.log("getLessonsByCourse loaded");
+// Get Lessons of a Course
+const getLessonsByCourse = async (req, res) => {
+  try {
 
+    const lessons = await Lesson.find({
+      course: req.params.courseId,
+    }).sort({ order: 1 });
+
+    res.status(200).json(lessons);
+
+  } catch (error) {
+    res.status(500).json({
+      message: error.message,
+    });
+  }
+};
 // Get Lesson By ID
 const getLessonById = async (req, res) => {
   try {
@@ -112,6 +128,7 @@ const deleteLesson = async (req, res) => {
 module.exports = {
   createLesson,
   getLessons,
+  getLessonsByCourse,
   getLessonById,
   updateLesson,
   deleteLesson,

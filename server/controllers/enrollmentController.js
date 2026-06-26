@@ -1,7 +1,7 @@
 const Enrollment = require("../models/Enrollment");
-
-// Enroll in Course
+const Course = require("../models/course");
 const enrollCourse = async (req, res) => {
+  console.log(req.body);
   try {
     const { student, course } = req.body;
 
@@ -20,6 +20,9 @@ const enrollCourse = async (req, res) => {
       student,
       course,
     });
+    await Course.findByIdAndUpdate(course, {
+    $inc: { studentsEnrolled: 1 }
+});
 
     res.status(201).json({
       message: "Enrollment Successful",
@@ -81,15 +84,19 @@ const deleteEnrollment = async (req, res) => {
   try {
     const enrollment = await Enrollment.findByIdAndDelete(req.params.id);
 
-    if (!enrollment) {
-      return res.status(404).json({
-        message: "Enrollment not found",
-      });
-    }
+if (!enrollment) {
+  return res.status(404).json({
+    message: "Enrollment not found",
+  });
+}
 
-    res.status(200).json({
-      message: "Enrollment Deleted",
-    });
+await Course.findByIdAndUpdate(enrollment.course, {
+  $inc: { studentsEnrolled: -1 },
+});
+
+res.status(200).json({
+  message: "Enrollment Deleted",
+});
 
   } catch (error) {
     res.status(500).json({

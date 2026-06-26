@@ -1,8 +1,9 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import api from "../services/api";
 
-function AddCourse() {
+function EditCourse() {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [course, setCourse] = useState({
@@ -11,9 +12,22 @@ function AddCourse() {
     category: "",
     thumbnail: "",
     duration: "",
-    level: "Beginner",
-    price: "Free",
+    level: "",
+    price: "",
   });
+
+  useEffect(() => {
+    fetchCourse();
+  }, []);
+
+  const fetchCourse = async () => {
+    try {
+      const res = await api.get(`/courses/${id}`);
+      setCourse(res.data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const handleChange = (e) => {
     setCourse({
@@ -26,21 +40,18 @@ function AddCourse() {
     e.preventDefault();
 
     try {
-      await api.post("/courses", {
-        ...course,
-        instructor: localStorage.getItem("userId"),
-      });
+      await api.put(`/courses/${id}`, course);
 
-      alert("Course Added Successfully ✅");
+      alert("Course Updated Successfully");
 
-      navigate("/courses");
+      navigate(`/courses/${id}`);
     } catch (err) {
-      alert(err.response?.data?.message || "Something went wrong");
+      alert(err.response?.data?.message || "Update Failed");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex justify-center items-center p-10">
+    <div className="min-h-screen bg-gray-100 flex justify-center items-center">
 
       <form
         onSubmit={handleSubmit}
@@ -48,43 +59,37 @@ function AddCourse() {
       >
 
         <h2 className="text-4xl font-bold text-center mb-8 text-blue-700">
-          Add New Course
+          Edit Course
         </h2>
 
         <input
           type="text"
           name="title"
-          placeholder="Course Title"
           value={course.title}
           onChange={handleChange}
           className="w-full border p-3 rounded mb-4"
-          required
+          placeholder="Title"
         />
 
         <textarea
           name="description"
-          placeholder="Course Description"
           value={course.description}
           onChange={handleChange}
-          className="w-full border p-3 rounded mb-4"
           rows="4"
-          required
+          className="w-full border p-3 rounded mb-4"
         />
 
         <input
           type="text"
           name="category"
-          placeholder="Category"
           value={course.category}
           onChange={handleChange}
           className="w-full border p-3 rounded mb-4"
-          required
         />
 
         <input
           type="text"
           name="thumbnail"
-          placeholder="Thumbnail Image URL"
           value={course.thumbnail}
           onChange={handleChange}
           className="w-full border p-3 rounded mb-4"
@@ -93,11 +98,9 @@ function AddCourse() {
         <input
           type="text"
           name="duration"
-          placeholder="Duration (Example: 8 Hours)"
           value={course.duration}
           onChange={handleChange}
           className="w-full border p-3 rounded mb-4"
-          required
         />
 
         <select
@@ -114,16 +117,15 @@ function AddCourse() {
         <input
           type="text"
           name="price"
-          placeholder="Price"
           value={course.price}
           onChange={handleChange}
           className="w-full border p-3 rounded mb-6"
         />
 
         <button
-          className="w-full bg-blue-700 hover:bg-blue-800 text-white py-3 rounded-lg text-lg"
+          className="w-full bg-blue-700 text-white py-3 rounded-lg hover:bg-blue-800"
         >
-          Create Course
+          Save Changes
         </button>
 
       </form>
@@ -132,4 +134,4 @@ function AddCourse() {
   );
 }
 
-export default AddCourse;
+export default EditCourse;

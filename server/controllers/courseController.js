@@ -1,21 +1,37 @@
-const Course = require("../models/Course");
+const Course = require("../models/course");
 
 // Create Course
 const createCourse = async (req, res) => {
   try {
-    const { title, description, category, thumbnail, instructor } = req.body;
+    const {
+      title,
+      description,
+      category,
+      thumbnail,
+      duration,
+      level,
+      price,
+    } = req.body;
 
     const course = await Course.create({
       title,
       description,
       category,
       thumbnail,
-      instructor,
+      duration,
+      level,
+      price,
+      instructor: req.body.instructor,
     });
+
+    const populatedCourse = await Course.findById(course._id).populate(
+      "instructor",
+      "name email"
+    );
 
     res.status(201).json({
       message: "Course Created Successfully",
-      course,
+      course: populatedCourse,
     });
   } catch (error) {
     res.status(500).json({

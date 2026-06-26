@@ -10,6 +10,9 @@ import AdminDashboard from "./pages/AdminDashboard";
 import MyCourses from "./pages/MyCourses";
 import AddCourse from "./pages/AddCourse";
 import AddLesson from "./pages/AddLesson";
+import ProtectedRoute from "./components/ProtectedRoute";
+import EditCourse from "./pages/EditCourse";
+import MyCourseDetails from "./pages/MyCourseDetails";
 
 function App() {
   return (
@@ -26,15 +29,51 @@ function App() {
 
         <Route path="/courses/:id" element={<CourseDetails />} />
 
-        <Route path="/student" element={<StudentDashboard />} />
+        <Route
+  path="/student"
+  element={
+    <ProtectedRoute>
+      <StudentDashboard />
+    </ProtectedRoute>
+  }
+/>
+        <Route
+  path="/admin"
+  element={
+    <ProtectedRoute>
+      <AdminDashboard />
+    </ProtectedRoute>
+  }
+/>
 
-        <Route path="/admin" element={<AdminDashboard />} />
-
-        <Route path="/my-courses" element={<MyCourses />} />
-
+        <Route
+  path="/my-courses"
+  element={
+    <ProtectedRoute>
+      <MyCourses />
+    </ProtectedRoute>
+  }
+/>
         <Route path="/add-course" element={<AddCourse />} />
 
         <Route path="/add-lesson" element={<AddLesson />} />
+
+        <Route
+  path="/edit-course/:id"
+  element={
+    <ProtectedRoute>
+      <EditCourse />
+    </ProtectedRoute>
+  }
+/>
+<Route
+  path="/my-courses/:id"
+  element={
+    <ProtectedRoute>
+      <MyCourseDetails />
+    </ProtectedRoute>
+  }
+/>
 
       </Routes>
     </BrowserRouter>
