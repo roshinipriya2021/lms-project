@@ -59,9 +59,13 @@ function CourseDetails() {
     }
   };
 
-  const handleEdit = () => {
-    alert("Edit Course page will be added next.");
-  };
+  import { useNavigate } from "react-router-dom";
+
+const navigate = useNavigate();
+
+const handleEdit = () => {
+  navigate(`/edit-course/${course._id}`);
+};
 
   const handleAddLesson = () => {
     navigate("/add-lesson");
